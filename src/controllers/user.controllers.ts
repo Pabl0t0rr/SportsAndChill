@@ -34,4 +34,11 @@ export const loginUser = async(name: string , password: string) => {
     if(!samePass) return null;
 
     return user;
+};
+
+export const duplicatedName = async (name : string) => {
+    const db = getDB();
+    const userName = await db.collection(userCollection).findOne({name});
+
+    return userName;
 }

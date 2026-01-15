@@ -1,6 +1,6 @@
 import { IResolvers } from "@graphql-tools/utils"
 import { signToken } from "../controllers/auth.controllers";
-import { createUser, loginUser } from "../controllers/user.controllers";
+import { createUser, duplicatedName, loginUser } from "../controllers/user.controllers";
 
 export const resolvers : IResolvers = {
     Query : {
@@ -10,7 +10,9 @@ export const resolvers : IResolvers = {
     Mutation : {
         registerUser : async (_, {input} : {input : {name: string, email: string, password: string, age: number, preferences: string[]}}) => {
             
-            //Create valodation for non duplicated name
+            //Create validation for non duplicated name
+            const existName = await duplicatedName(input.name); 
+            if(existName) throw new Error("Username already exists");
 
             const newUser = await createUser(input.name, input.email, input.age, input.preferences || [], [], "user", input.password);
             
