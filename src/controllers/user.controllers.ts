@@ -42,3 +42,9 @@ export const duplicatedName = async (name : string) => {
 
     return userName;
 }
+
+export const showAllUsers = async () => {
+    const db = getDB();
+    const users = await db.collection(userCollection).find().toArray();
+    return users;
+}
