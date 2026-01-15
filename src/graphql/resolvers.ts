@@ -1,9 +1,12 @@
 import { IResolvers } from "@graphql-tools/utils"
 import { signToken } from "../controllers/auth.controllers";
-import { createUser, duplicatedName, loginUser } from "../controllers/user.controllers";
+import { createUser, duplicatedName, loginUser, showAllUsers } from "../controllers/user.controllers";
 
 export const resolvers : IResolvers = {
     Query : {
+        users : async () => {
+            return await showAllUsers();
+        }
 
     },
 
