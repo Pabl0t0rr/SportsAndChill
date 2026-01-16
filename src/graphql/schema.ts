@@ -2,6 +2,12 @@ import { gql } from "apollo-server";
 
 export const typeDefs = gql`
 
+    enum LevelSession {
+        Beginner
+        Intermediate
+        Advanced
+    }
+
     type User {
         _id: ID!,
         name: String!,
@@ -23,7 +29,7 @@ export const typeDefs = gql`
         _id: ID!,
         title: String!,
         type: String!,
-        level: String!,
+        level: LevelSession!,
         duration: Int!,
         instructor: String!,
         capacity: Int!,
@@ -52,7 +58,7 @@ export const typeDefs = gql`
     input CreateSessionInput {
         title: String!,
         type: String!,
-        level: String!,
+        level: LevelSession!,
         duration: Int!,
         instructor: String!,
         capacity: Int!,
