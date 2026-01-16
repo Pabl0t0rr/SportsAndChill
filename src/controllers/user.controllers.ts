@@ -1,8 +1,9 @@
 import { ObjectId } from "mongodb";
 import bcrypt from "bcryptjs";
 import { getDB } from "../db/mongo";
-import { userCollection } from "../utils/utils";
+import { reservationCollection, userCollection } from "../utils/utils";
 import { User } from "../types/user";
+import { get } from "node:http";
 
 export const createUser = async (name: string, email: string, age: number, preferences: string[], reservations: string[], typeUser: string, password: string) => {
     const db = getDB();
@@ -48,3 +49,13 @@ export const showAllUsers = async () => {
     const users = await db.collection(userCollection).find().toArray();
     return users;
 }
+
+// Field Resolvers
+export const getUserReservations = async (parent : User) => {
+    const db = getDB();
+    const listIdsReservations = parent.reservations;
+    if(!listIdsReservations) return [];
+    
+    const objectIds = listIdsReservations.map((id) => new ObjectId(id));
+    return db.collection(reservationCollection).find({_id : {$in : objectIds}}).toArray();
+}   
