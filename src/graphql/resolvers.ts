@@ -1,13 +1,23 @@
 import { IResolvers } from "@graphql-tools/utils"
 import { signToken } from "../controllers/auth.controllers";
 import { createUser, duplicatedName, loginUser, showAllUsers } from "../controllers/user.controllers";
+import { allSessions, sessionById, createSession } from "../controllers/sessions.controllers";
+import { LevelSession } from "../types/session";
+
 
 export const resolvers : IResolvers = {
     Query : {
         users : async () => {
             return await showAllUsers();
-        }
+        },
 
+        sessions : async () => {
+            return allSessions();
+        },
+
+        session : async (_, {id} : {id : string}) => {
+            return sessionById(id);
+        },
     },
 
     Mutation : {
@@ -34,6 +44,13 @@ export const resolvers : IResolvers = {
             if(!validUser) throw new Error("Invalid credentiasl");
 
             return signToken (validUser._id.toString())
+        },
+        createSession : async (_, {input} : {input : {title: string, type: string, level: LevelSession, duration: number, instructor: string, capacity: number, tags: string[]}}) => {
+            const newSession = await createSession(input.title, input.type, input.level, input.duration, input.instructor, input.capacity, input.tags);
+            
+            if(!newSession) throw new Error("Error creating session");
+            
+            return newSession;
         },
     }
 }
