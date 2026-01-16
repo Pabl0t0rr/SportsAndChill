@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 //Import rutas
 import { getDB } from "../db/mongo";
 import { tokenPayload } from "../types/auth";
-import { secret } from "../utils/utils";
+import { secret, userCollection } from "../utils/utils";
 
 export const signToken = (userId : string) => jwt.sign({ userId }, secret as string, { expiresIn: "1h" });
 
@@ -22,7 +22,7 @@ export const getUserToken = async (token : string) => {
         const payload = verifyToken(token);
         if(!payload) return null;
         const db = getDB();
-        return await db.collection(process.env.COLLECTION_NAME_U!).findOne({ _id: new ObjectId(payload.userId) });
+        return await db.collection(userCollection).findOne({ _id: new ObjectId(payload.userId) });
 
     } catch (err) {
         return null;
