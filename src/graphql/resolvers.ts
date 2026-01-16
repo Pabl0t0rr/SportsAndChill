@@ -1,6 +1,6 @@
 import { IResolvers } from "@graphql-tools/utils"
 import { signToken } from "../controllers/auth.controllers";
-import { createUser, duplicatedName, loginUser, showAllUsers } from "../controllers/user.controllers";
+import { createUser, duplicatedName, getUserReservations, loginUser, showAllUsers } from "../controllers/user.controllers";
 import { allSessions, sessionById, createSession } from "../controllers/sessions.controllers";
 import { LevelSession } from "../types/session";
 
@@ -52,5 +52,9 @@ export const resolvers : IResolvers = {
             
             return newSession;
         },
+    },
+
+    User : {
+        reservations : getUserReservations
     }
 }
