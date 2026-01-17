@@ -59,7 +59,7 @@ export const resolvers : IResolvers = {
 
         //Reservation
         createReservation : async (_, {input} : {input : {sessionId: string, date: string}}, ctx ) => {
-            const userId = ctx.user;
+            const userId = ctx.user._id.toString();
             if(!userId) throw new Error("Unauthorized");
 
             const newReservation = await createReservation(userId, input.sessionId, input.date);
@@ -70,7 +70,7 @@ export const resolvers : IResolvers = {
         },
         //Not working yet
         cancelledReservation : async (_, {input} : {input : {sessionId: string}}, ctx) => {
-            const userId = ctx.user;
+            const userId = ctx.user._id.toString();
             if(!userId) throw new Error("Unauthorized");
 
             const cancelledReservation = await changeStatusReservation(userId, input.sessionId, ReservationStatus.CANCELLED);

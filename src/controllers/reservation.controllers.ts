@@ -28,7 +28,7 @@ export const changeStatusReservation = async (userId : string ,sessionId: string
         {returnDocument: 'after'} // To return the updated document
     );
 
-    return changeReservation?.value;
+    return changeReservation;
 }
 
 
