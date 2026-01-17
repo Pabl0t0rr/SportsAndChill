@@ -66,9 +66,11 @@ export const typeDefs = gql`
     }
 
     input ReserveSessionInput {
-        userId: ID!,
-        sessionId: ID!,
+        sessionId: String!,
         date: String!,
+    }
+    input CancelledReservationInput {
+        sessionId: String!,
     }
 
     type Query {
@@ -81,7 +83,8 @@ export const typeDefs = gql`
         registerUser(input: RegisterUserInput!): AuthPayload!,
         loginUser(input: LoginUserInput!): String!,
         createSession(input: CreateSessionInput!): Session!,
-        reserveSession(input: ReserveSessionInput!): Reservation!,
+        createReservation(input: ReserveSessionInput!): Reservation!,
+        cancelledReservation(input: CancelledReservationInput!): Reservation!
     }
 
 `;
