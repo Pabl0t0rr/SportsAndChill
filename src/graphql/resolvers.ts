@@ -1,10 +1,11 @@
 import { IResolvers } from "@graphql-tools/utils"
 import { signToken } from "../controllers/auth.controllers";
 import { createUser, duplicatedName, getUserReservations, loginUser, showAllUsers } from "../controllers/user.controllers";
-import { allSessions, sessionById, createSession } from "../controllers/sessions.controllers";
+import { allSessions, sessionById, createSession, validateCreatorType, modifySession, validateCreatorSession } from "../controllers/sessions.controllers";
 import { LevelSession } from "../types/session";
 import { createReservation, changeStatusReservation, getReservationSession } from "../controllers/reservation.controllers";
 import { ReservationStatus } from "../types/reservation";
+import { TypeUser } from "../types/user";
 
 export const resolvers : IResolvers = {
     Query : {
@@ -29,7 +30,7 @@ export const resolvers : IResolvers = {
             const existName = await duplicatedName(input.name); 
             if(existName) throw new Error("Username already exists");
 
-            const newUser = await createUser(input.name, input.email, input.age, input.preferences || [], [], "user", input.password);
+            const newUser = await createUser(input.name, input.email, input.age, input.preferences || [], TypeUser.User, input.password);
             
             //In case of error
             if(!newUser) throw new Error("Error creating user");
@@ -49,12 +50,45 @@ export const resolvers : IResolvers = {
         },
 
         //Session
-        createSession : async (_, {input} : {input : {title: string, type: string, level: LevelSession, duration: number, instructor: string, capacity: number, tags: string[]}}) => {
-            const newSession = await createSession(input.title, input.type, input.level, input.duration, input.instructor, input.capacity, input.tags);
+        registerSessionCreator : async (_, {input} : {input : {name: string, email: string, password: string, age: number, preferences: string[]}}) => {
+            
+            //Create validation for non duplicated name
+            const existName = await duplicatedName(input.name); 
+            if(existName) throw new Error("Username already exists");
+
+            const newSessionCreator = await createUser(input.name, input.email, input.age, input.preferences || [], TypeUser.SessionCreator, input.password);
+            
+            //In case of error
+            if(!newSessionCreator) throw new Error("Error creating user");
+            
+            return {
+                token : signToken(newSessionCreator._id.toString()),
+                user : newSessionCreator
+            }
+        },
+
+        createSession : async (_, {input} : {input : {title: string, type: string, level: LevelSession, duration: number, instructor: string, capacity: number, tags: string[]}}, ctx) => {
+            
+            //Validate if is session creator
+            await validateCreatorType(ctx);
+            
+            const newSession = await createSession(input.title, input.type, input.level, input.duration, ctx.user._id.toString(), input.capacity, input.tags);
             
             if(!newSession) throw new Error("Error creating session");
             
             return newSession;
+        },
+
+        modifySession : async (_, {sessionId, input} : {sessionId : string, input : {title?: string, type?: string, level?: LevelSession, duration?: number, instructor?: string, capacity?: number, tags?: string[]}}, ctx) => {
+            //Validate if is session creator
+            await validateCreatorType(ctx);
+            await validateCreatorSession(sessionId, ctx.user._id.toString());
+
+            const updatedSession = await modifySession(sessionId, input);
+
+            if(!updatedSession) throw new Error("Error modifying session");
+
+            return updatedSession;
         },
 
         //Reservation

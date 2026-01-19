@@ -8,5 +8,11 @@ export type User = {
     age : number,
     preferences ?: string[],
     reservations ?: string[],
-    typeUser ?: string
+    typeUser ?: TypeUser
+}
+
+export enum TypeUser {
+    Admin = "Admin",
+    User = "User",
+    SessionCreator = "sessionCreator"
 }
