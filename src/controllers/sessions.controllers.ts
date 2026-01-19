@@ -2,7 +2,15 @@ import { getDB } from "../db/mongo"
 import { ObjectId } from "mongodb";
 import { Session, LevelSession } from "../types/session"
 import { sessionCollection } from "../utils/utils";
+import { TypeUser } from "../types/user";
 
+
+export const validateCreatorType  = async (ctx : any) => {
+    const userId = ctx.user._id.toString();
+    const userType = ctx.user.typeUser;
+   
+    if(!userId || userType !== TypeUser.SessionCreator)throw new Error("Unauthorized");    
+}
 
 export const createSession = async (title : string, type: string, level: LevelSession, duration: number, instructor: string, capacity: number, tags: string[]) => {
     const db = getDB();

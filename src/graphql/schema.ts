@@ -82,6 +82,7 @@ export const typeDefs = gql`
     type Mutation {
         registerUser(input: RegisterUserInput!): AuthPayload!,
         loginUser(input: LoginUserInput!): String!,
+        registerSessionCreator(input: RegisterUserInput!): AuthPayload!,
         createSession(input: CreateSessionInput!): Session!,
         createReservation(input: ReserveSessionInput!): Reservation!,
         cancelledReservation(input: CancelledReservationInput!): Reservation!
