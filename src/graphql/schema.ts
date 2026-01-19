@@ -60,9 +60,17 @@ export const typeDefs = gql`
         type: String!,
         level: LevelSession!,
         duration: Int!,
-        instructor: String!,
         capacity: Int!,
         tags: [String]!,
+    }
+
+    input ModifySessionInput {
+        title: String,
+        type: String,
+        level: LevelSession,
+        duration: Int,
+        capacity: Int,
+        tags: [String],
     }
 
     input ReserveSessionInput {
@@ -84,6 +92,7 @@ export const typeDefs = gql`
         loginUser(input: LoginUserInput!): String!,
         registerSessionCreator(input: RegisterUserInput!): AuthPayload!,
         createSession(input: CreateSessionInput!): Session!,
+        modifySession(sessionId: ID!, input: ModifySessionInput!): Session!,
         createReservation(input: ReserveSessionInput!): Reservation!,
         cancelledReservation(input: CancelledReservationInput!): Reservation!
     }

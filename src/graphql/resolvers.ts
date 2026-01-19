@@ -1,7 +1,7 @@
 import { IResolvers } from "@graphql-tools/utils"
 import { signToken } from "../controllers/auth.controllers";
 import { createUser, duplicatedName, getUserReservations, loginUser, showAllUsers } from "../controllers/user.controllers";
-import { allSessions, sessionById, createSession, validateCreatorType } from "../controllers/sessions.controllers";
+import { allSessions, sessionById, createSession, validateCreatorType, modifySession, validateCreatorSession } from "../controllers/sessions.controllers";
 import { LevelSession } from "../types/session";
 import { createReservation, changeStatusReservation, getReservationSession } from "../controllers/reservation.controllers";
 import { ReservationStatus } from "../types/reservation";
@@ -72,11 +72,23 @@ export const resolvers : IResolvers = {
             //Validate if is session creator
             await validateCreatorType(ctx);
             
-            const newSession = await createSession(input.title, input.type, input.level, input.duration, input.instructor, input.capacity, input.tags);
+            const newSession = await createSession(input.title, input.type, input.level, input.duration, ctx.user._id.toString(), input.capacity, input.tags);
             
             if(!newSession) throw new Error("Error creating session");
             
             return newSession;
+        },
+
+        modifySession : async (_, {sessionId, input} : {sessionId : string, input : {title?: string, type?: string, level?: LevelSession, duration?: number, instructor?: string, capacity?: number, tags?: string[]}}, ctx) => {
+            //Validate if is session creator
+            await validateCreatorType(ctx);
+            await validateCreatorSession(sessionId, ctx.user._id.toString());
+
+            const updatedSession = await modifySession(sessionId, input);
+
+            if(!updatedSession) throw new Error("Error modifying session");
+
+            return updatedSession;
         },
 
         //Reservation
