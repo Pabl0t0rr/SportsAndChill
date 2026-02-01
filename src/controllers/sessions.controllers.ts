@@ -1,7 +1,8 @@
 import { getDB } from "../db/mongo"
 import { ObjectId } from "mongodb";
 import { Session, LevelSession } from "../types/session"
-import { sessionCollection } from "../utils/utils";
+import { Reservation, ReservationStatus } from "../types/reservation";
+import { sessionCollection, reservationCollection } from "../utils/utils";
 
 
 export const createSession = async (title : string, type: string, level: LevelSession, duration: number, instructor: string, capacity: number, tags: string[]) => {
@@ -34,4 +35,15 @@ export const sessionById = async (id : string) => {
     const db = getDB();
     const session = await db.collection<Session>(sessionCollection).findOne({ _id: new ObjectId(id) });
     return session;
+}
+
+// Field Resolvers
+
+export const getAvailableSpots = async (parent: Session) => {
+    const db = getDB();
+    const countReserves = await db.collection<Reservation>(reservationCollection).countDocuments({
+        session: parent._id.toString(),
+        status: ReservationStatus.CONFIRMED
+    });
+    return countReserves;
 }
