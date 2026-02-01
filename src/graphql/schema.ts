@@ -74,11 +74,11 @@ export const typeDefs = gql`
     }
 
     input ReserveSessionInput {
-        sessionId: String!,
+        sessionId: ID!,
         date: String!,
     }
     input CancelledReservationInput {
-        sessionId: String!,
+        sessionId: ID!,
     }
 
     type Query {

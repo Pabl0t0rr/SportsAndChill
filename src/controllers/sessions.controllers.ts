@@ -55,7 +55,7 @@ export const sessionById = async (id : string) => {
 export const getAvailableSpots = async (parent: Session) => {
     const db = getDB();
     const countReserves = await db.collection<Reservation>(reservationCollection).countDocuments({
-        session: parent._id.toString(),
+        session: parent._id,
         status: ReservationStatus.CONFIRMED
     });
     return countReserves;
