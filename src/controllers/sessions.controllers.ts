@@ -3,7 +3,6 @@ import { ObjectId } from "mongodb";
 import { Session, LevelSession } from "../types/session"
 import { Reservation, ReservationStatus } from "../types/reservation";
 import { sessionCollection, reservationCollection } from "../utils/utils";
-import { sessionCollection } from "../utils/utils";
 import { TypeUser } from "../types/user";
 
 //Mutations
