@@ -1,6 +1,8 @@
 import { getDB } from "../db/mongo"
 import { ObjectId } from "mongodb";
 import { Session, LevelSession } from "../types/session"
+import { Reservation, ReservationStatus } from "../types/reservation";
+import { sessionCollection, reservationCollection } from "../utils/utils";
 import { sessionCollection } from "../utils/utils";
 import { TypeUser } from "../types/user";
 
@@ -49,6 +51,16 @@ export const sessionById = async (id : string) => {
     return session;
 }
 
+// Field Resolvers
+
+export const getAvailableSpots = async (parent: Session) => {
+    const db = getDB();
+    const countReserves = await db.collection<Reservation>(reservationCollection).countDocuments({
+        session: parent._id.toString(),
+        status: ReservationStatus.CONFIRMED
+    });
+    return countReserves;
+}
 //Validacions
 
 export const validateCreatorType  = async (ctx : any) => {

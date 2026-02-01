@@ -1,11 +1,13 @@
 import { IResolvers } from "@graphql-tools/utils"
 import { signToken } from "../controllers/auth.controllers";
 import { createUser, duplicatedName, getUserReservations, loginUser, showAllUsers } from "../controllers/user.controllers";
+import { allSessions, sessionById, createSession, getAvailableSpots } from "../controllers/sessions.controllers";
 import { allSessions, sessionById, createSession, validateCreatorType, modifySession, validateCreatorSession } from "../controllers/sessions.controllers";
 import { LevelSession } from "../types/session";
 import { createReservation, changeStatusReservation, getReservationSession } from "../controllers/reservation.controllers";
 import { ReservationStatus } from "../types/reservation";
 import { TypeUser } from "../types/user";
+
 
 export const resolvers : IResolvers = {
     Query : {
@@ -121,4 +123,8 @@ export const resolvers : IResolvers = {
     Reservation : {
         session : getReservationSession
     },
+
+    Session : {
+        reserved : getAvailableSpots
+    }
 }
