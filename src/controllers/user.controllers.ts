@@ -2,10 +2,9 @@ import { ObjectId } from "mongodb";
 import bcrypt from "bcryptjs";
 import { getDB } from "../db/mongo";
 import { reservationCollection, userCollection } from "../utils/utils";
-import { User } from "../types/user";
-import { get } from "node:http";
+import { TypeUser, User } from "../types/user";
 
-export const createUser = async (name: string, email: string, age: number, preferences: string[], reservations: string[], typeUser: string, password: string) => {
+export const createUser = async (name: string, email: string, age: number, preferences: string[], typeUser: TypeUser, password: string) => {
     const db = getDB();
     const passEncript = await bcrypt.hash(password, 10);
 
@@ -16,8 +15,8 @@ export const createUser = async (name: string, email: string, age: number, prefe
         email,
         age,
         preferences,
-        reservations,
-        typeUser : "User"
+        reservations : [],
+        typeUser
     });
 
     const user = await db.collection(userCollection).findOne({ _id: newUser.insertedId });
