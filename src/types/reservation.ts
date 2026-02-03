@@ -2,8 +2,8 @@ import { ObjectId } from "mongodb";
 
 export type Reservation = {
     _id: ObjectId,
-    userId: string,
-    session: string,
+    userId: ObjectId,
+    session: ObjectId,
     date: string,
     status: ReservationStatus,
 }

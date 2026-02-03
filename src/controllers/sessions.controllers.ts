@@ -15,7 +15,7 @@ export const createSession = async (title : string, type: string, level: LevelSe
         type,
         level,
         duration,
-        instructor,
+        instructor : new ObjectId(instructor),
         capacity,
         reserved: 0,
         tags
@@ -55,7 +55,7 @@ export const sessionById = async (id : string) => {
 export const getAvailableSpots = async (parent: Session) => {
     const db = getDB();
     const countReserves = await db.collection<Reservation>(reservationCollection).countDocuments({
-        session: parent._id.toString(),
+        session: parent._id,
         status: ReservationStatus.CONFIRMED
     });
     return countReserves;
@@ -74,5 +74,5 @@ export const validateCreatorSession = async (sessionId: string, creatorId: strin
     const session = await db.collection<Session>(sessionCollection).findOne({ _id: new ObjectId(sessionId) });
 
     if(!session) throw new Error("Session not found");
-    if(session.instructor !== creatorId) throw new Error("You are not the creator of this session");
+    if(!session.instructor.equals(new ObjectId(creatorId))) throw new Error("You are not the creator of this session");
 }
