@@ -68,18 +68,20 @@ export const resolvers : IResolvers = {
                 user : newSessionCreator
             }
         },
-        createSession : async (_, {input} : {input : {title: string, type: string, level: LevelSession, duration: number, instructor: string, capacity: number, tags: string[]}}, ctx) => {
+        createSession : async (_, {input} : {input : {title: string, type: string, level: LevelSession, duration: number, capacity: number, tags: string[]}}, ctx) => {
             
             //Validate if is session creator
             await validateCreatorType(ctx);
+            const trainerId = ctx.user._id.toString();
             
-            const newSession = await createSession(input.title, input.type, input.level, input.duration, ctx.user._id.toString(), input.capacity, input.tags);
+            const newSession = await createSession(input.title, input.type, input.level, input.duration, trainerId, input.capacity, input.tags);
             
             if(!newSession) throw new Error("Error creating session");
             
             return newSession;
         },
-        modifySession : async (_, {sessionId, input} : {sessionId : string, input : {title?: string, type?: string, level?: LevelSession, duration?: number, instructor?: string, capacity?: number, tags?: string[]}}, ctx) => {
+        modifySession : async (_, {sessionId, input} : {sessionId : string, input : {title?: string, type?: string, level?: LevelSession, duration?: number, capacity?: number, tags?: string[]}}, ctx) => {
+            
             //Validate if is session creator
             await validateCreatorType(ctx);
             await validateCreatorSession(sessionId, ctx.user._id.toString());

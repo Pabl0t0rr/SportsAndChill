@@ -6,7 +6,7 @@ export type Session = {
     type: string,
     level: LevelSession,
     duration: number,
-    instructor: string,
+    instructor: ObjectId,
     capacity: number,
     reserved: number,
     tags: string[], //For saving the key words of each session
