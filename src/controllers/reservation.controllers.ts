@@ -8,7 +8,8 @@ export const createReservation = async (userId: ObjectId, sessionId: ObjectId, d
     const db = getDB(); 
 
     //To check if user has a reservation done for the same session
-    await checkExistingReservation (userId, sessionId);
+    const existingReservation = await checkExistingReservation (userId, sessionId);
+    if(existingReservation) throw new Error("You have already reserved this session");
 
     const newReservation = await db.collection<Reservation>(reservationCollection).insertOne({
         _id : new ObjectId(),
@@ -29,6 +30,9 @@ export const createReservation = async (userId: ObjectId, sessionId: ObjectId, d
 export const changeStatusReservation = async (userId : ObjectId ,sessionId: ObjectId, status: ReservationStatus) => {
     const db = getDB();
 
+    const existingReservation = await checkExistingReservation (userId, sessionId);
+    if(!existingReservation) throw new Error("No reservation found for this session");
+    
     const changeReservation = await db.collection(reservationCollection).findOneAndUpdate(
         {userId: userId, session: sessionId},
         {$set: {status: status}},
@@ -41,8 +45,7 @@ export const changeStatusReservation = async (userId : ObjectId ,sessionId: Obje
 const checkExistingReservation = async (userId: ObjectId, sessionId: ObjectId) => {
     const db = getDB();
     const existingReservation = await db.collection<Reservation>(reservationCollection).findOne({userId: userId, session: sessionId});
-    if(existingReservation) throw new Error("You have already reserved this session");
-
+ 
     return existingReservation;
 }
 
