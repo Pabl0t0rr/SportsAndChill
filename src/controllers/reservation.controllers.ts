@@ -54,6 +54,7 @@ const addReservationUser = async (userId: ObjectId, reservationId: ObjectId) => 
         
     return addedReservation;
 }
+
 // Field Resolvers
 
 export const getReservationSession = async (parent : Reservation) => {
