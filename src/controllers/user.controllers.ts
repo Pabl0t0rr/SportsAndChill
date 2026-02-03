@@ -46,6 +46,7 @@ export const duplicatedName = async (name : string) => {
 export const showAllUsers = async () => {
     const db = getDB();
     const users = await db.collection(userCollection).find().toArray();
+    
     return users;
 }
 
@@ -56,5 +57,6 @@ export const getUserReservations = async (parent : User) => {
     if(!listIdsReservations) return [];
     
     const objectIds = listIdsReservations.map((id) => new ObjectId(id));
+    
     return db.collection(reservationCollection).find({_id : {$in : objectIds}}).toArray();
 }   
